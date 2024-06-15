@@ -1,29 +1,35 @@
 import reflex as rx
 
 def navbar():
-    
-    
+        
     return rx.chakra.grid(
         rx.chakra.grid_item(
             
             #uni due logo
-            rx.center(
-                rx.link(
-                    rx.image(
-                    src="/signet_ude_rgb.png",
-                    width="75px"
-                    ),
-                    href="https://www.uni-due.de/"
-                )   
-            ),
+            
+            rx.link(
+                rx.image(
+                src="/signet_ude_rgb.png",
+                width="75px"
+                ),
+                href="https://www.uni-due.de/"
+            ),   
+            
             row_span=1,
             col_span=1,
             width="100%",
-            border="1px solid black"
+            #border="1px solid black",
+            justify_self="start"
+        ),
+        rx.chakra.grid_item(
+            
+            row_span=1,############################issue
+            col_span=1,
+            margin="20px 0",
+            bg="blue"
         ),
         rx.chakra.grid_item(
 
-            
             rx.heading(
                 "Traffic Object Detection: Human vs AI",
                 size='7',
@@ -31,8 +37,9 @@ def navbar():
             ),
             
             row_span=1,
-            col_span=4,
+            col_span=7,
             #border="1px solid black",
+            justify_self="start"
                 
         ),
         rx.chakra.grid_item(
@@ -67,7 +74,7 @@ def navbar():
             
             
         ),
-        template_columns="repeat(6, 1fr)",
+        template_columns="repeat(10, 1fr)",
         width="100%",
         alignItems="center",
         #justify_content="center"  
