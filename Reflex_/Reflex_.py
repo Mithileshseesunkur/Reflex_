@@ -1,6 +1,6 @@
 import reflex as rx
-from .components.navbar import navbar
-from .components.header import header
+from .components.MA_navbar import navbar
+#from .components.header import header
 
 def main():
     '''return rx.text('This is Home Page', font_size="20px", colour="green", bg="blue",
@@ -11,7 +11,7 @@ def main():
         
         rx.divider(margin_top="20px"),
 
-        header()
+        #header()
 
         
     )
