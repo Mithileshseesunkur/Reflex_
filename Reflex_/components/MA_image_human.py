@@ -7,15 +7,17 @@ class CheckboxState(rx.State):
 
     def toggle_car_state(self):
         self.car= not self.car
+        print(self.car)
     
     def toggle_trafficLight_state(self):
         self.trafficLight= not self.trafficLight
+        print(self.trafficLight)
     #option2: bool = False
     #option3: bool = False
     #option4: bool = False
     #option5: bool = False
 
-def image() -> rx.Component:
+def image_for_human() -> rx.Component:
 
     return rx.chakra.box( #main box
         
@@ -33,7 +35,7 @@ def image() -> rx.Component:
             ),
             rx.chakra.box(  #box for heading and classes checkboxes
                 
-                rx.chakra.heading("What do you see?"),
+                rx.chakra.heading("What do you see?"), #heading
             
                 rx.divider(margin_top="10px",
                         margin_bottom="10px",
@@ -46,6 +48,7 @@ def image() -> rx.Component:
                         
                         on_change=CheckboxState.toggle_car_state()
                         #to do something about the state of the class
+                        
                     ),
 
                     rx.checkbox(
@@ -74,4 +77,4 @@ def image() -> rx.Component:
     )
     
     
-        
+

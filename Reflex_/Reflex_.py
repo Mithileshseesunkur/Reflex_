@@ -1,6 +1,6 @@
 import reflex as rx
 from .components.MA_navbar import navbar
-from .components.MA_image_viewer import image
+from .components.MA_image_human import image_for_human
 
 def main():
     '''return rx.text('This is Home Page', font_size="20px", colour="green", bg="blue",
@@ -9,11 +9,11 @@ def main():
     return rx.container( #the container contraintsthe contents of the page..difff sizes available
         
 
-        navbar(),
+        navbar(), #stuff at the top
         
         rx.divider(margin_top="20px", margin_bottom="20px"),
 
-        image(),
+        image_for_human(), #the image and checkboxes the human will see
 
         size="4",
         

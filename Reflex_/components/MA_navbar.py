@@ -32,7 +32,7 @@ def navbar():
 
             rx.heading(
                 "Traffic Object Detection: Human vs AI",
-                size='7',
+                size='8',
                 #align="center"                           
             ),
             
