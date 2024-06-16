@@ -7,11 +7,15 @@ def main():
                    as_="b", _hover={"colour":"white",
                                     "bg":"black"})'''
     return rx.container( #the container contraintsthe contents of the page..difff sizes available
+        
+
         navbar(),
         
-        rx.divider(margin_top="20px"),
+        rx.divider(margin_top="20px", margin_bottom="20px"),
 
-        image()
+        image(),
+
+        size="4",
         
     )
 
