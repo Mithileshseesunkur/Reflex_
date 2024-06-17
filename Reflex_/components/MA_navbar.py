@@ -1,26 +1,105 @@
 import reflex as rx
+from reflex.style import toggle_color_mode
+
+class ColorMode():
+    mode :str=""
+    mode_toggle:bool=False
+
+    def mode_title_toggle(self):
+        self.mode_toggle=not self.mode_toggle
+        if self.mode_toggle==True:
+            self.mode="Dark"
+        else:
+            self.mode="Light"
+        
+        #return self.mode
+
+
 
 def navbar():
         
-    return rx.chakra.grid(
-        rx.chakra.grid_item(
+    return rx.flex( #main box of navbar
+        rx.chakra.hstack( #horizontal stack of boxes
+            rx.chakra.box( #logo box
             
-            #uni due logo
-            
-            rx.link(
-                rx.image(
-                src="/signet_ude_rgb.png",
-                width="75px"
+                #uni due logo
+                rx.link(
+                    rx.image(
+                    src="/unidue.png",
+                    width="75px"
+                    ),
+                    href="https://www.uni-due.de/"
+                ),   
+                
+                align="start"
+            ),
+
+            rx.chakra.box( #heading box
+                
+                rx.chakra.heading(
+                    "Traffic Object Detection: Humans vs AI",
+                    size="lg",
+                    margin_left="10px"
+
                 ),
-                href="https://www.uni-due.de/"
-            ),   
+
+                
+
+            ),
+
+            rx.chakra.box( #dark mode toggle + menu
+                rx.button(
+                    rx.icon(tag="moon"),
+                    #"Toggle Colour Mode",
+                    #color_mode.mode_title_toggle(),
+                    on_click=toggle_color_mode,
+                    margin_left="240px"
+
+                ),
+                rx.menu.root(
+                    rx.menu.trigger(
+                        rx.button(
+                            rx.icon("menu"),
+                                margin_left="120px")
+                                  
+                        ),
+                    rx.menu.content(
+                        #rx.menu.item("About"),
+                        rx.menu.item(
+                            rx.link(
+                                "Upload",
+                                href="https://reflex.dev/",
+                                #style={"color":"black"},
+                                size="2"
+                            )
+                        ),
+                        rx.menu.item(
+                            rx.link(
+                                "About",
+                                href="https://www.uni-due.de/",
+                                #style={"color":"black"},
+                                size="2"
+                            )
+                        )                      
+                    )
+                    
+                )
+                
             
-            row_span=1,
-            col_span=1,
-            width="100%",
-            #border="1px solid black",
-            justify_self="start"
-        ),
+            ),
+            
+            
+
+
+            
+            
+        )
+
+    )
+        
+    
+            
+'''
         rx.chakra.grid_item(
             
             row_span=1,############################issue
@@ -78,16 +157,6 @@ def navbar():
         width="100%",
         alignItems="center",
         #justify_content="center"  
-
-        
-    )
-            
+''' 
      
     
-
-    '''
-        # creating menu
-        rx.center(
-            
-        justify_content="space-between"
-    )'''
