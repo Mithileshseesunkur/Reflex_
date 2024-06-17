@@ -4,6 +4,8 @@ class CheckboxState(rx.State):
 
     car: bool = False
     trafficLight: bool=False
+    bus: bool=False
+    human: bool=False
 
     def toggle_car_state(self):
         self.car= not self.car
@@ -12,6 +14,14 @@ class CheckboxState(rx.State):
     def toggle_trafficLight_state(self):
         self.trafficLight= not self.trafficLight
         print(self.trafficLight)
+
+    def toggle_bus_state(self):
+        self.bus= not self.bus
+        print(self.bus)
+
+    def toggle_human_state(self):
+        self.human= not self.human
+        print(self.human)
     #option2: bool = False
     #option3: bool = False
     #option4: bool = False
@@ -57,8 +67,25 @@ def image_for_human() -> rx.Component:
                         on_change=CheckboxState.toggle_trafficLight_state()
                         #to do something about the state of the class
                     ),
+
+                    rx.checkbox(
+                        "Bus",
+                
+                        on_change=CheckboxState.toggle_bus_state()
+                        #to do something about the state of the class
+                    ),
+
+                    rx.checkbox(
+                        "Human",
+                
+                        on_change=CheckboxState.toggle_human_state()
+                        #to do something about the state of the class
+                    ),
                         align="start",
                         spacing="4",  # Add spacing between checkboxes
+                        
+                    
+                    
                 ),
 
             width="100%",
@@ -71,7 +98,7 @@ def image_for_human() -> rx.Component:
         ),
         rx.divider(margin_top="20px", 
                 margin_bottom="20px", 
-                color_scheme="blue"),
+            ),
 
         width="100%"  # Ensure the outer box takes the full width
     )

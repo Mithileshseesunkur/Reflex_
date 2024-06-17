@@ -18,9 +18,9 @@ class ColorMode():
 
 def navbar():
         
-    return rx.flex( #main box of navbar
+    return rx.box( #main box of navbar
         rx.chakra.hstack( #horizontal stack of boxes
-            rx.chakra.box( #logo box
+            rx.chakra.flex( #logo box
             
                 #uni due logo
                 rx.link(
@@ -31,36 +31,43 @@ def navbar():
                     href="https://www.uni-due.de/"
                 ),   
                 
-                align="start"
+                align="start",
+                #width="25%",
+                flex_shrink="0",
+                #border="1px"
             ),
 
-            rx.chakra.box( #heading box
+            rx.chakra.flex( #heading box
                 
                 rx.chakra.heading(
                     "Traffic Object Detection: Humans vs AI",
                     size="lg",
                     margin_left="10px"
+                    
 
                 ),
+                flex_shrink="0"
 
                 
-
+                
+                
             ),
 
-            rx.chakra.box( #dark mode toggle + menu
+            rx.chakra.flex( #dark mode toggle + menu
                 rx.button(
                     rx.icon(tag="moon"),
                     #"Toggle Colour Mode",
                     #color_mode.mode_title_toggle(),
                     on_click=toggle_color_mode,
-                    margin_left="240px"
+                    margin_right="10px"
 
                 ),
                 rx.menu.root(
                     rx.menu.trigger(
                         rx.button(
                             rx.icon("menu"),
-                                margin_left="120px")
+                                #margin_left="120px"
+                            )
                                   
                         ),
                     rx.menu.content(
@@ -83,7 +90,12 @@ def navbar():
                         )                      
                     )
                     
-                )
+                ),
+                #border="1px",
+                flex_grow="1",
+                width="80%",
+                justify="end",
+                spacing="2"
                 
             
             ),
