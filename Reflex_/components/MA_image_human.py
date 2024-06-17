@@ -100,7 +100,8 @@ def image_for_human() -> rx.Component:
                 margin_bottom="20px", 
             ),
 
-        width="100%"  # Ensure the outer box takes the full width
+        width="100%",  # Ensure the outer box takes the full width,
+        
     )
     
     
