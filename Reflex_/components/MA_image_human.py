@@ -39,9 +39,38 @@ def image_for_human() -> rx.Component:
                             width="640px",
                             border_radius="15px",
                             ),
-                height="100%",
+                
+                rx.hstack(
+                    rx.chakra.button(
+                        rx.chakra.icon(tag="arrow_left"),
+                        border_radius="25%",
+                        margin_top="10px",
+                        #margin_left="20px"
+                    ),
 
-                width="100%"
+                    rx.chakra.button(
+                        rx.chakra.icon(tag="arrow_right"),
+                        border_radius="25%",
+                        margin_top="10px"
+                    ),
+
+                    rx.chakra.button(
+                        rx.chakra.icon(tag="check"),
+                        border_radius="25%",
+                        margin_top="10px",
+                        justify_self="end"
+                    ),
+                    
+
+
+                ),
+                    
+                height="100%",
+                width="100%",
+                border="1px"
+                
+
+                
             ),
             rx.chakra.box(  #box for heading and classes checkboxes
                 

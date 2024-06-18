@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+import numpy as np
 
 model= YOLO("yolov8m.pt")
 
@@ -11,10 +12,19 @@ result=model(source_image,show=True,
             exist_ok=True,
             save_txt=True)
 
-
 predicted_classes = []
 
 for r in result:
+    for c in r.boxes.cls:
+        predicted=model.names[int(c)] 
+        predicted_classes.append(predicted)
+
+
+
+predicted_classes = np.unique(predicted_classes)
+print(predicted_classes)
+
+'''for r in result:
     # Iterate through each detected object
     for det in result:
         # det contains information about one detected object
@@ -22,7 +32,7 @@ for r in result:
         predicted_classes.append(cls_id)
 
 # Print the predicted classes
-print(predicted_classes)
+print(predicted_classes)'''
 
 '''boxes=result.boxes #boxes fro boundning box outputs
 masks=result.masks # masks object for segmentation masks outputs
