@@ -28,6 +28,6 @@ def about():
 
 app = rx.App()
 app.add_page(main, route="/")
-app.add_page(about, route="/aboutpage") #when added to address, reroute to about
+#app.add_page(about, route="/aboutpage") #when added to address, reroute to about
 
 app._compile()

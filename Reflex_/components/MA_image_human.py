@@ -41,33 +41,52 @@ def image_for_human() -> rx.Component:
                             ),
                 
                 rx.hstack(
-                    rx.chakra.button(
-                        rx.chakra.icon(tag="arrow_left"),
-                        border_radius="25%",
-                        margin_top="10px",
-                        #margin_left="20px"
-                    ),
+                    rx.chakra.tooltip(
+                        rx.chakra.button(
+                            rx.chakra.icon(tag="arrow_left"),
+                            border_radius="25%",
+                            margin_top="10px",
+                            #margin_left="20px"
+                        ),
+                        label="Previous"
 
-                    rx.chakra.button(
-                        rx.chakra.icon(tag="arrow_right"),
-                        border_radius="25%",
-                        margin_top="10px"
-                    ),
-
-                    rx.chakra.button(
-                        rx.chakra.icon(tag="check"),
-                        border_radius="25%",
-                        margin_top="10px",
-                        justify_self="end"
                     ),
                     
+                    rx.chakra.tooltip(
+                        rx.chakra.button(
+                            rx.chakra.icon(tag="arrow_right"),
+                            border_radius="25%",
+                            margin_top="10px"
+                        ),
+                        label="Next"
+                        
 
+                    ),
+                    
+                    rx.chakra.tooltip(
+                        rx.chakra.button(
+                            rx.chakra.icon(tag="check"),
+                            border_radius="25%",
+                            margin_top="10px",
+                            position="absolute",
+                            bottom="0",
+                            right="0",
+                            #bg="#68D391", add cond for dark and white
+                            #color="white"
+                            
+                        
+
+                        ),
+                        label="Run Object Detection",
+                        
+                    ),               
 
                 ),
+                position="relative",
                     
                 height="100%",
-                width="100%",
-                border="1px"
+                width="100%"
+                #border="1px"
                 
 
                 
@@ -130,6 +149,8 @@ def image_for_human() -> rx.Component:
             ),
 
         width="100%",  # Ensure the outer box takes the full width,
+        #background_color="var(--tomato-3)",
+        #padding="10px"
         
     )
     
