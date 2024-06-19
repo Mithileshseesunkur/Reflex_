@@ -27,6 +27,13 @@ import reflex as rx
     #option4: bool = False
     #option5: bool = False'''
 
+predicted_classe={
+    0:"Car",
+    1:"Traffic Light",
+    2:"Bus",
+    3:"Human"
+}
+
 def image_for_AI():
 
     return rx.chakra.box( #main box
@@ -45,7 +52,10 @@ def image_for_AI():
             ),
             rx.chakra.box(  #box for heading and classes checkboxes
                 
-                rx.chakra.heading("What The AI sees."), #heading
+                rx.chakra.text(
+                    "What The AI sees.",
+                    font_size="2em"
+                    ), #heading
             
                 rx.divider(margin_top="10px",
                         margin_bottom="10px",

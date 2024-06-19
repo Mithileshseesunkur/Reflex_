@@ -93,7 +93,9 @@ def image_for_human() -> rx.Component:
             ),
             rx.chakra.box(  #box for heading and classes checkboxes
                 
-                rx.chakra.heading("What do you see?"), #heading
+                rx.chakra.text("What do you see?",
+                               font_size="2em"
+                               ), #heading
             
                 rx.divider(margin_top="10px",
                         margin_bottom="10px",
