@@ -1,42 +1,105 @@
 import reflex as rx
+import os
+import requests
+from PIL import Image
 
-class CheckboxState(rx.State):
 
+def initialise():
+    
+    assets_path = "assets/test_images/"
+    ini_image_list=[f for f in os.listdir(assets_path) if f.endswith(('.jpg','.jepg','.png'))]
+    
+    for i,item in enumerate(ini_image_list):
+        ini_image_list[i]=Image.open(assets_path+item)
+
+    print(ini_image_list)
+    return ini_image_list
+
+
+class State(rx.State): #checkbox state---------------
+
+    #checkboxes----------
     car: bool = False
     trafficLight: bool=False
     bus: bool=False
     human: bool=False
+    
 
-    def toggle_car_state(self):
+    #image viewer--------
+    #assets_path:str="/assets/test_images/"
+    current_image_index:int=0
+    images:list[str]=initialise()
+    #current_image_path:str=assets_path+images[0]
+    #print("here ini ",current_image_path, images)
+    path:str=""
+
+    def initialise_path(self):
+        if self.images:
+            self.path = self.images[0]  # Initialize the path with the first image
+
+    
+    #-------------------------------------------------------checkboxes
+    def toggle_car_state(self,event=None):
         self.car= not self.car
         print(self.car)
     
-    def toggle_trafficLight_state(self):
+    def toggle_trafficLight_state(self,event=None):
         self.trafficLight= not self.trafficLight
         print(self.trafficLight)
 
-    def toggle_bus_state(self):
+    def toggle_bus_state(self, event=None):
         self.bus= not self.bus
         print(self.bus)
 
-    def toggle_human_state(self):
+    def toggle_human_state(self, event=None):
         self.human= not self.human
         print(self.human)
-    #option2: bool = False
-    #option3: bool = False
-    #option4: bool = False
-    #option5: bool = False
 
-def image_for_human() -> rx.Component:
+    #----------------------------------------------------------image viewer
+    def next_image(self):
+        if self.current_image_index < len(self.images)-1:
+            self.current_image_index=self.current_image_index+1
+            #self.current_image_path=self.assets_path+self.images[self.current_image_index]
+            print("image path=",self.images[self.current_image_index])
+            self.path=self.images[self.current_image_index]
+            
+            #print(self.current_image_path)
+           
 
+    
+    def previous_image(self):
+        if self.current_image_index > 0:
+            self.current_image_index =self.current_image_index-1
+            print("image path=",self.images[self.current_image_index])
+            self.path=self.images[self.current_image_index]
+            
+
+   
+    
+    
+        
+
+
+
+
+#--------------------------------------------------------------------------------
+
+def image_for_human():
+    
+    
+    
+    State.initialise_path
+    print("here-------------------")
+    
     return rx.chakra.box( #main box
+
         
         rx.hstack( #arrange items horizontally inside main box
             
             rx.chakra.box( #box for image inside main box
                 
-                rx.chakra.image(src="/test_images/t1.png",
-                            width="640px",
+                rx.chakra.image(src=State.images[State.current_image_index],
+                            width="512px",
                             border_radius="15px",
                             ),
                 
@@ -47,6 +110,8 @@ def image_for_human() -> rx.Component:
                             border_radius="25%",
                             margin_top="10px",
                             #margin_left="20px"
+                            on_click=State.previous_image
+
                         ),
                         label="Previous"
 
@@ -56,7 +121,8 @@ def image_for_human() -> rx.Component:
                         rx.chakra.button(
                             rx.chakra.icon(tag="arrow_right"),
                             border_radius="25%",
-                            margin_top="10px"
+                            margin_top="10px",
+                            on_click=State.next_image
                         ),
                         label="Next"
                         
@@ -106,7 +172,7 @@ def image_for_human() -> rx.Component:
                     rx.checkbox(
                         "Car",
                         
-                        on_change=CheckboxState.toggle_car_state()
+                        on_change=State.toggle_car_state
                         #to do something about the state of the class
                         
                     ),
@@ -114,21 +180,21 @@ def image_for_human() -> rx.Component:
                     rx.checkbox(
                         "Traffic light",
                 
-                        on_change=CheckboxState.toggle_trafficLight_state()
+                        on_change=State.toggle_trafficLight_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Bus",
                 
-                        on_change=CheckboxState.toggle_bus_state()
+                        on_change=State.toggle_bus_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Human",
                 
-                        on_change=CheckboxState.toggle_human_state()
+                        on_change=State.toggle_human_state
                         #to do something about the state of the class
                     ),
                         align="start",

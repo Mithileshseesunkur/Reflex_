@@ -1,7 +1,7 @@
 import reflex as rx
-from .components.MA_navbar import navbar
-from .components.MA_image_human import image_for_human
-from .components.MA_image_AI import image_for_AI
+from .Components_reflex.MA_navbar import navbar
+from .Components_reflex.MA_image_human import image_for_human
+from .Components_reflex.MA_image_AI import image_for_AI
 
 def main():
     '''return rx.text('This is Home Page', font_size="20px", colour="green", bg="blue",

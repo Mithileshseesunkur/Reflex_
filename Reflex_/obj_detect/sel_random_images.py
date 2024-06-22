@@ -19,18 +19,23 @@ def sel_random_images(source_img, destination_img,
 
         #Select a random subset of image files
         selected_images = random.sample(image_files, min(num_images, len(image_files)))
+
+        for i, img in enumerate(selected_images, start=1):
+            # Construct new file names
+            new_image_name = f'{i}.jpg'
+            new_text_name = f'{i}.txt'
         
-        #copy selected images
-        for img in selected_images:
+            #copy selected images
+        
             source_path_img=os.path.join(source_img,img)
-            dest_path_img=os.path.join(destination_img, img)
+            dest_path_img=os.path.join(destination_img, new_image_name)
             sh.copy2(source_path_img, dest_path_img)
 
              # Check for a corresponding text file and copy it if it exists
             text_file_name = os.path.splitext(img)[0] + '.txt'
             source_text_path = os.path.join(source_txt, text_file_name)
             if os.path.exists(source_text_path):
-                dest_text_path = os.path.join(destination_txt, text_file_name)
+                dest_text_path = os.path.join(destination_txt, new_text_name)
                 sh.copy2(source_text_path, dest_text_path)
 
 
