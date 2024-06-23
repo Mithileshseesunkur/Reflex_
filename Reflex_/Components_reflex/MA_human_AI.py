@@ -2,6 +2,7 @@ import reflex as rx
 import os
 import requests
 from PIL import Image
+from .obj_detect.yolo_ import yolo_
 
 
 def initialise():
@@ -12,30 +13,25 @@ def initialise():
     for i,item in enumerate(ini_image_list):
         ini_image_list[i]=Image.open(assets_path+item)
 
-    print(ini_image_list)
+    #print(ini_image_list)
     return ini_image_list
 
 
 class State(rx.State): #checkbox state---------------
 
-    #checkboxes----------
+    #var checkboxes----------
     car: bool = False
     trafficLight: bool=False
     bus: bool=False
     human: bool=False
     
 
-    #image viewer--------
-    #assets_path:str="/assets/test_images/"
+    #var image viewer--------
     current_image_index:int=0
     images:list[str]=initialise()
-    #current_image_path:str=assets_path+images[0]
-    #print("here ini ",current_image_path, images)
-    path:str=""
+    
 
-    def initialise_path(self):
-        if self.images:
-            self.path = self.images[0]  # Initialize the path with the first image
+    
 
     
     #-------------------------------------------------------checkboxes
@@ -59,47 +55,38 @@ class State(rx.State): #checkbox state---------------
     def next_image(self):
         if self.current_image_index < len(self.images)-1:
             self.current_image_index=self.current_image_index+1
-            #self.current_image_path=self.assets_path+self.images[self.current_image_index]
-            print("image path=",self.images[self.current_image_index])
-            self.path=self.images[self.current_image_index]
+        
+            #self.path=self.images[self.current_image_index]
             
-            #print(self.current_image_path)
-           
-
-    
     def previous_image(self):
         if self.current_image_index > 0:
             self.current_image_index =self.current_image_index-1
-            print("image path=",self.images[self.current_image_index])
-            self.path=self.images[self.current_image_index]
             
-
-   
-    
-    
+            #self.path=self.images[self.current_image_index]
         
+    #------------------------------------------------------------runYOLO
+    def runYOLO(self):
+        print('yolo runnning')
+        predicted_classes:list[str]
+        print(self.images[self.current_image_index])
 
+        predicted_classes=yolo_(image_path=self.images[self.current_image_index])
 
+    #------------------------------------------------------------------
 
+#--------------------------------------------------------IMAGE VIEWER & YOLO
 
-#--------------------------------------------------------------------------------
-
-def image_for_human():
+def human_AI():
     
-    
-    
-    State.initialise_path
-    print("here-------------------")
     
     return rx.chakra.box( #main box
-
         
         rx.hstack( #arrange items horizontally inside main box
             
             rx.chakra.box( #box for image inside main box
                 
                 rx.chakra.image(src=State.images[State.current_image_index],
-                            width="512px",
+                            width="640px",
                             border_radius="15px",
                             ),
                 
@@ -137,6 +124,7 @@ def image_for_human():
                             position="absolute",
                             bottom="0",
                             right="0",
+                            on_click=State.runYOLO
                             #bg="#68D391", add cond for dark and white
                             #color="white"
                             
@@ -151,7 +139,7 @@ def image_for_human():
                 position="relative",
                     
                 height="100%",
-                width="100%"
+                width="100%",
                 #border="1px"
                 
 
@@ -215,8 +203,83 @@ def image_for_human():
         rx.divider(margin_top="20px", 
                 margin_bottom="20px", 
             ),
+        #--------------------------------------------------------YOLO IMAGE
+        rx.hstack( #arrange items horizontally inside main box
+            
+            rx.chakra.box( #box for image inside main box
+                
+                rx.chakra.image(src="/test_images/predicted/t1.png",
+                            width="640px",
+                            border_radius="15px",
+                            ),
+                height="100%",
 
-        width="100%",  # Ensure the outer box takes the full width,
+                width="100%"
+            ),
+            rx.chakra.box(  #box for heading and classes checkboxes
+                
+                rx.chakra.text(
+                    "What The AI sees.",
+                    font_size="2em"
+                    ), #heading
+            
+                rx.divider(margin_top="10px",
+                        margin_bottom="10px",
+                ),
+
+                rx.hstack( #arrange class checkbox horizontally 
+
+                    rx.checkbox(
+                        "Car",
+                        
+                        #on_change=CheckboxState.toggle_car_state()
+                        #to do something about the state of the class
+                        
+                    ),
+
+                    rx.checkbox(
+                        "Traffic light",
+                
+                        #on_change=CheckboxState.toggle_trafficLight_state()
+                        #to do something about the state of the class
+                    ),
+
+                    rx.checkbox(
+                        "Bus",
+                
+                        #on_change=CheckboxState.toggle_bus_state()
+                        #to do something about the state of the class
+                    ),
+
+                    rx.checkbox(
+                        "Human",
+                
+                        #on_change=CheckboxState.toggle_human_state()
+                        #to do something about the state of the class
+                    ),
+                        align="start",
+                        spacing="4",  # Add spacing between checkboxes
+                        
+                    
+                    
+                ),
+
+            width="100%",
+
+            spacing="4",  # Add spacing between the boxes
+
+            align_items="start",  # Align items to the top
+            
+            ),
+        ),
+        rx.divider(margin_top="20px", 
+                margin_bottom="20px", 
+            ),
+
+        width="100%"  # Ensure the outer box takes the full width
+
+        
+         # Ensure the outer box takes the full width,
         #background_color="var(--tomato-3)",
         #padding="10px"
         

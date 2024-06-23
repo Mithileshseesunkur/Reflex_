@@ -1,7 +1,7 @@
 import reflex as rx
 from .Components_reflex.MA_navbar import navbar
-from .Components_reflex.MA_image_human import image_for_human
-from .Components_reflex.MA_image_AI import image_for_AI
+from .Components_reflex.MA_human_AI import human_AI
+
 
 def main():
     '''return rx.text('This is Home Page', font_size="20px", colour="green", bg="blue",
@@ -14,9 +14,9 @@ def main():
         
         rx.divider(margin_top="20px", margin_bottom="20px"),
 
-        image_for_human(), #the image and checkboxes the human will see
+        human_AI(), #the image and checkboxes the human will see
 
-        image_for_AI(), #what the AI sees
+        #image_for_AI(), #what the AI sees
 
         size="4",
         
