@@ -5,6 +5,7 @@ import numpy as np
 def yolo_(image_path):
     model= YOLO("yolov8m.pt")    
 
+    #source_image=r"D:\Coding_\Reflex_\Reflex_\assets\test_images\t1.png"
     source_image=image_path #for current image being shown
     source_predicted=r"D:\Coding_\Reflex_\Reflex_\assets\test_images"
     result=model(source_image,show=True, 
@@ -24,6 +25,9 @@ def yolo_(image_path):
 
 
     predicted_classes = np.unique(predicted_classes)
+    predicted_classes=predicted_classes.tolist()
     print(predicted_classes)
     return predicted_classes
 
+#list=yolo_()
+#print(type(list))

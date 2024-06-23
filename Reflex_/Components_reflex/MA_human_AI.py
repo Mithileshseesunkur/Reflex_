@@ -3,6 +3,7 @@ import os
 import requests
 from PIL import Image
 from .obj_detect.yolo_ import yolo_
+import time
 
 
 def initialise():
@@ -16,6 +17,15 @@ def initialise():
     #print(ini_image_list)
     return ini_image_list
 
+def get_result():
+    result_path="assets/test_images/predicted/"
+    result_image_list=[g for g in os.listdir(result_path) if g.endswith(('.jpg','.jepg','.png'))]
+
+    for j,item_res in enumerate(result_image_list):
+        result_image_list[j]=Image.open(result_path+item_res)
+    
+
+        return result_image_list
 
 class State(rx.State): #checkbox state---------------
 
@@ -28,11 +38,10 @@ class State(rx.State): #checkbox state---------------
 
     #var image viewer--------
     current_image_index:int=0
+    current_result_index:int=0
     images:list[str]=initialise()
-    
-
-    
-
+    result:list[str]=get_result()
+    predicted_classes:list=[]
     
     #-------------------------------------------------------checkboxes
     def toggle_car_state(self,event=None):
@@ -67,10 +76,12 @@ class State(rx.State): #checkbox state---------------
     #------------------------------------------------------------runYOLO
     def runYOLO(self):
         print('yolo runnning')
-        predicted_classes:list[str]
+        
         print(self.images[self.current_image_index])
-
-        predicted_classes=yolo_(image_path=self.images[self.current_image_index])
+        time.sleep(0.5)
+        
+        self.predicted_classes=yolo_(self.images[self.current_image_index])
+        self.result=get_result()
 
     #------------------------------------------------------------------
 
@@ -87,8 +98,8 @@ def human_AI():
                 
                 rx.chakra.image(src=State.images[State.current_image_index],
                             width="640px",
-                            border_radius="15px",
-                            ),
+                            border_radius="15px", 
+                            ), #---------------------Image to user
                 
                 rx.hstack(
                     rx.chakra.tooltip(
@@ -208,7 +219,7 @@ def human_AI():
             
             rx.chakra.box( #box for image inside main box
                 
-                rx.chakra.image(src="/test_images/predicted/t1.png",
+                rx.chakra.image(src=State.result[State.current_result_index],
                             width="640px",
                             border_radius="15px",
                             ),
