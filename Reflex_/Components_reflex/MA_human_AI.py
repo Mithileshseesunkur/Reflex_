@@ -40,7 +40,7 @@ class State(rx.State): #checkbox state---------------
     current_image_index:int=0
     current_result_index:int=0
     images:list[str]=initialise()
-    result:list[str]=get_result()
+    result:list[str]
     predicted_classes:list=[]
     
     #-------------------------------------------------------checkboxes
@@ -240,36 +240,10 @@ def human_AI():
 
                 rx.hstack( #arrange class checkbox horizontally 
 
-                    rx.checkbox(
-                        "Car",
-                        
-                        #on_change=CheckboxState.toggle_car_state()
-                        #to do something about the state of the class
-                        
-                    ),
-
-                    rx.checkbox(
-                        "Traffic light",
-                
-                        #on_change=CheckboxState.toggle_trafficLight_state()
-                        #to do something about the state of the class
-                    ),
-
-                    rx.checkbox(
-                        "Bus",
-                
-                        #on_change=CheckboxState.toggle_bus_state()
-                        #to do something about the state of the class
-                    ),
-
-                    rx.checkbox(
-                        "Human",
-                
-                        #on_change=CheckboxState.toggle_human_state()
-                        #to do something about the state of the class
-                    ),
-                        align="start",
-                        spacing="4",  # Add spacing between checkboxes
+                    rx.foreach(State.predicted_classes,
+                               lambda item:rx.chakra.badge(item,
+                                                           color_scheme="cyan"),
+                                                           margin_left="10px")
                         
                     
                     
