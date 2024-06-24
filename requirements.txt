@@ -1,1 +1,10 @@
+google-drive==0.5.1
+h5py==3.11.0
+httptools==0.6.1
+mega.py==1.0.8
+proto-plus==1.24.0
 reflex==0.5.3
+roboflow==1.1.33
+scikit-learn==1.5.0
+split-folders==0.5.1
+ultralytics==8.2.32

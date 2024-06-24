@@ -8,7 +8,7 @@ import time
 
 def initialise():
     
-    assets_path = "assets/test_images/"
+    assets_path = "assets/test_images/random_img/"
     ini_image_list=[f for f in os.listdir(assets_path) if f.endswith(('.jpg','.jepg','.png'))]
     
     for i,item in enumerate(ini_image_list):
@@ -97,9 +97,10 @@ def human_AI():
             rx.chakra.box( #box for image inside main box
                 
                 rx.chakra.image(src=State.images[State.current_image_index],
-                            width="640px",
+                            width="512px",
                             border_radius="15px", 
-                            ), #---------------------Image to user
+                            ),
+                              #---------------------Image to user
                 
                 rx.hstack(
                     rx.chakra.tooltip(
@@ -144,18 +145,21 @@ def human_AI():
                         ),
                         label="Run Object Detection",
                         
-                    ),               
+                    ),
+                    
+                    width="512px",
+                    position="relative",            
 
                 ),
-                position="relative",
-                    
+                
+                 
                 height="100%",
-                width="100%",
+                width="512px",
+                flex_grow=0,
                 #border="1px"
                 
-
-                
             ),
+            
             rx.chakra.box(  #box for heading and classes checkboxes
                 
                 rx.chakra.text("What do you see?",
@@ -220,7 +224,7 @@ def human_AI():
             rx.chakra.box( #box for image inside main box
                 
                 rx.chakra.image(src=State.result[State.current_result_index],
-                            width="640px",
+                            width="512px",
                             border_radius="15px",
                             ),
                 height="100%",
