@@ -4,9 +4,10 @@ import requests
 from PIL import Image
 from .obj_detect.yolo_ import yolo_
 import time
+import threading
 
 
-def initialise():
+def initialise(): #get first image when loading 
     
     assets_path = "assets/test_images/random_img/"
     ini_image_list=[f for f in os.listdir(assets_path) if f.endswith(('.jpg','.jepg','.png'))]
@@ -17,7 +18,7 @@ def initialise():
     #print(ini_image_list)
     return ini_image_list
 
-def get_result():
+def get_result(): #get image of resulting prediction 
     result_path="assets/test_images/predicted/"
     result_image_list=[g for g in os.listdir(result_path) if g.endswith(('.jpg','.jepg','.png'))]
 
@@ -27,13 +28,27 @@ def get_result():
 
         return result_image_list
 
-class State(rx.State): #checkbox state---------------
+
+
+
+class State(rx.State): 
+
+    #app start
+    app_started:bool=False
 
     #var checkboxes----------
     car: bool = False
     trafficLight: bool=False
     bus: bool=False
     human: bool=False
+    
+    #blur image before start
+    blur_value:str="blur(5px)"
+    blur_state:bool=True
+    start:int
+    end:int
+
+    reveal_visibility:bool=True
     
 
     #var image viewer--------
@@ -43,6 +58,8 @@ class State(rx.State): #checkbox state---------------
     result:list[str]
     predicted_classes:list=[]
     
+
+
     #-------------------------------------------------------checkboxes
     def toggle_car_state(self,event=None):
         self.car= not self.car
@@ -59,11 +76,39 @@ class State(rx.State): #checkbox state---------------
     def toggle_human_state(self, event=None):
         self.human= not self.human
         print(self.human)
+    #---------------------------------------------------------image timer
+    
+    def timer(self):
+        print("starting timer")
+        self.start=time.time()
+        time.sleep(3)
+        self.end=time.time()
+        if self.end-self.start==3:
+            self.blur_state=True
+            print("3secs over")
+    
+    def toggle_reveal_visibility(self):
+        if self.reveal_visibility:
+            self.reveal_visibility=not self.reveal_visibility
+
+    def unblur(self):
+        self.blur_state=False
+        self.blur_value="0"
+        t=threading.Thread(target=self.timer)
+        t.start()
+
+        if self.blur_state==True:
+            self.blur_value="blur(5px)"
+        
+
 
     #----------------------------------------------------------image viewer
     def next_image(self):
         if self.current_image_index < len(self.images)-1:
             self.current_image_index=self.current_image_index+1
+            self.blur_state=True
+            self.blur_value="blur(5px)"
+            self.reveal_visibility=True
         
             #self.path=self.images[self.current_image_index]
             
@@ -78,17 +123,16 @@ class State(rx.State): #checkbox state---------------
         print('yolo runnning')
         
         print(self.images[self.current_image_index])
-        time.sleep(0.5)
+        time.sleep(0.1)
         
         self.predicted_classes=yolo_(self.images[self.current_image_index])
         self.result=get_result()
 
     #------------------------------------------------------------------
 
-#--------------------------------------------------------IMAGE VIEWER & YOLO
+#--------------------------------------------------------IMAGE VIEWER & YOLO INTERFACE
 
 def human_AI():
-    
     
     return rx.chakra.box( #main box
         
@@ -96,12 +140,32 @@ def human_AI():
             
             rx.chakra.box( #box for image inside main box
                 
-                rx.chakra.image(src=State.images[State.current_image_index],
+                rx.chakra.box(
+
+                    rx.chakra.image(src=State.images[State.current_image_index], #image to user
                             width="512px",
-                            border_radius="15px", 
-                            ),
-                              #---------------------Image to user
+                            border_radius="15px",
+                            object_fit="cover", #ensure image no distortion
+                            
+                        ),
+                        rx.box(
                 
+                            position="absolute",
+                            top="0",
+                            left="0",
+                            width="100%",
+                            height="100%",
+                            backdrop_filter=State.blur_value,
+                            z_index="1",
+                        
+                        ),
+                        position="relative",
+                        width="100%",
+                        height="100%",
+                        overflow="hidden",
+                        border_radius="10px",
+
+                ),
                 rx.hstack(
                     rx.chakra.tooltip(
                         rx.chakra.button(
@@ -121,13 +185,32 @@ def human_AI():
                             rx.chakra.icon(tag="arrow_right"),
                             border_radius="25%",
                             margin_top="10px",
-                            on_click=State.next_image
+                            on_click=State.next_image,
+                            
                         ),
+
                         label="Next"
-                        
 
                     ),
-                    
+
+                    rx.chakra.tooltip(
+                        rx.chakra.button(
+                            "Reveal", #button to click to reveal image and start timer
+                            #position="absolute",
+                            #top="50%",
+                            #left="50%",
+                            #transform="translate(-50%, -50%)",
+                            #z_index="2",
+                            margin_top="10px",
+                            margin_left="10px",
+                            #align="center",
+                            on_click=State.unblur,
+                            size="md",
+                            is_disabled= ~State.blur_state
+                        ),
+
+                        label="Click to unblur"
+                    ),
                     rx.chakra.tooltip(
                         rx.chakra.button(
                             rx.chakra.icon(tag="check"),
@@ -139,8 +222,6 @@ def human_AI():
                             on_click=State.runYOLO
                             #bg="#68D391", add cond for dark and white
                             #color="white"
-                            
-                        
 
                         ),
                         label="Run Object Detection",
@@ -219,54 +300,78 @@ def human_AI():
                 margin_bottom="20px", 
             ),
         #--------------------------------------------------------YOLO IMAGE
-        rx.hstack( #arrange items horizontally inside main box
+        # box of resulting image with obj detection
+        rx.chakra.box( 
             
-            rx.chakra.box( #box for image inside main box
+        
+            rx.hstack( #arrange items horizontally inside main box
                 
-                rx.chakra.image(src=State.result[State.current_result_index],
-                            width="512px",
-                            border_radius="15px",
-                            ),
-                height="100%",
+                rx.chakra.box( #box for image inside main box
+                    
+                    rx.chakra.image(src=State.result[State.current_result_index],
+                                width="512px",
+                                border_radius="15px",
+                                object_fit="cover",
+                                ),
 
-                width="100%"
-            ),
-            rx.chakra.box(  #box for heading and classes checkboxes
-                
-                rx.chakra.text(
-                    "What The AI sees.",
-                    font_size="2em"
-                    ), #heading
-            
-                rx.divider(margin_top="10px",
-                        margin_bottom="10px",
+                    height="100%",
+                    width="512px",
+                    #max_width="512px",
+                    flex_shrink="0",
+                    #border="1px"
+                    
                 ),
+                
+                rx.chakra.box(  #box for heading and classes checkboxes
+                    
+                    rx.chakra.text(
+                        "What The AI sees.",
+                        font_size="2em"
+                        ), #heading
+                
+                    rx.divider(margin_top="10px",
+                            margin_bottom="10px",
+                    ),
 
-                rx.hstack( #arrange class checkbox horizontally 
+                    rx.hstack( #arrange class checkbox horizontally 
 
-                    rx.foreach(State.predicted_classes,
-                               lambda item:rx.chakra.badge(item,
-                                                           color_scheme="cyan"),
-                                                           margin_left="10px")
+                        rx.foreach(State.predicted_classes,
+                                lambda item:rx.chakra.badge(item,
+                                                            color_scheme="cyan"),
+                                                            margin_left="10px"),
+                        spacing="4",  # Add spacing between the boxes    
                         
-                    
-                    
+                    ),
+
+                    width="100%",
+                      # Add spacing between the boxes
+                    align="start",  # Align items to the top
+                    #border="1px"
+                    flex_shrink="0",
+
+                
                 ),
 
-            width="100%",
-
-            spacing="4",  # Add spacing between the boxes
-
-            align_items="start",  # Align items to the top
-            
+                position="relative",
+                width="100%",
+                height="100%",
+                overflow="hidden",
+                border_radius="10px"
             ),
+
+            #flex_grow="0",
+            width="100%",
+            height="100%",
+            #border="1px"
         ),
+
         rx.divider(margin_top="20px", 
                 margin_bottom="20px", 
-            ),
+        ),
 
-        width="100%"  # Ensure the outer box takes the full width
-
+           
+        
+        
         
          # Ensure the outer box takes the full width,
         #background_color="var(--tomato-3)",
