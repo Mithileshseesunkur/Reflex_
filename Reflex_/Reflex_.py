@@ -3,6 +3,7 @@ from .Components_reflex.MA_navbar import navbar
 from .Components_reflex.MA_human_AI import human_AI
 
 
+
 def main():
     '''return rx.text('This is Home Page', font_size="20px", colour="green", bg="blue",
                    as_="b", _hover={"colour":"white",

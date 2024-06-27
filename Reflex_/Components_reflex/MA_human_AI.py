@@ -5,6 +5,7 @@ from PIL import Image
 from .obj_detect.yolo_ import yolo_
 import time
 import threading
+from countdown import countdown
 
 
 def initialise(): #get first image when loading 
@@ -36,28 +37,27 @@ class State(rx.State):
     #app start
     app_started:bool=False
 
-    #var checkboxes----------
+    #var checkboxes
     car: bool = False
     trafficLight: bool=False
     bus: bool=False
     human: bool=False
-    
+    #--------------------------
     #blur image before start
     blur_value:str="blur(5px)"
     blur_state:bool=True
-    start:int
-    end:int
+    time:int=3
+    time_up:bool
+    iter:int
+    #--------------------------
 
-    reveal_visibility:bool=True
-    
-
-    #var image viewer--------
+    #var image viewer
     current_image_index:int=0
     current_result_index:int=0
     images:list[str]=initialise()
     result:list[str]
     predicted_classes:list=[]
-    
+    #--------------------------
 
 
     #-------------------------------------------------------checkboxes
@@ -80,27 +80,34 @@ class State(rx.State):
     
     def timer(self):
         print("starting timer")
-        self.start=time.time()
-        time.sleep(3)
-        self.end=time.time()
-        if self.end-self.start==3:
+        for self.iter in range(3):
+            self.time-=1
+            time.sleep(1)
+            print(self.time)
+        
+        self.time_up=True
+        if self.time_up:
+            
             self.blur_state=True
-            print("3secs over")
-    
-    def toggle_reveal_visibility(self):
-        if self.reveal_visibility:
-            self.reveal_visibility=not self.reveal_visibility
-
+            #print("blur state",self.blur_state)
+            self.blur_value="blur(5px)"
+            self.time=3
+        print("timer up")
+        #return self.time_up
+        
     def unblur(self):
+        print("unblurred")
+        time.sleep(0.01)
         self.blur_state=False
         self.blur_value="0"
-        t=threading.Thread(target=self.timer)
-        t.start()
-
-        if self.blur_state==True:
-            self.blur_value="blur(5px)"
+        print(f"blur state and value before timer: {self.blur_state}, {self.blur_value}")
+        #timer_thread=threading.Thread(target=self.timer)
+        #timer_thread.start()
+        #timer_thread.join()
+        self.timer()
+        print(f"blur state and value after timer: {self.blur_state}, {self.blur_value}")
+        print("here")
         
-
 
     #----------------------------------------------------------image viewer
     def next_image(self):
@@ -219,9 +226,10 @@ def human_AI():
                             position="absolute",
                             bottom="0",
                             right="0",
-                            on_click=State.runYOLO
+                            on_click=State.runYOLO,
                             #bg="#68D391", add cond for dark and white
                             #color="white"
+                            is_disabled=State.blur_state
 
                         ),
                         label="Run Object Detection",
