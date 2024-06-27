@@ -41,6 +41,7 @@ class State(rx.State):
     trafficLight: bool=False
     bus: bool=False
     human: bool=False
+    checkbox_state:bool=False
     #--------------------------
 
     #blur image var
@@ -84,11 +85,13 @@ class State(rx.State):
     
     
     async def unblur(self):
+
         print("unblurred")
-        #time.sleep(0.01)
+
         self.check_button_disabled=False
         self.blur_state=False
         self.blur_value="0"
+        self.checkbox_state=False
         print(f"blur state and value before timer: {self.blur_state}, {self.blur_value}")
         
         
@@ -96,9 +99,7 @@ class State(rx.State):
         await asyncio.sleep(3)
         
         self.blur_value="blur(20px)"
-        #self.blur_state=True
-        #print("blur state",self.blur_state)
-        #self.blur_value="blur(5px)"
+        
         print(f"blur state and value after timer: {self.blur_state}, {self.blur_value}")
         print("here")
 
@@ -263,9 +264,9 @@ def human_AI():
 
                 rx.hstack( #arrange class checkbox horizontally 
 
-                    rx.checkbox(
+                    rx.chakra.checkbox(
                         "Car",
-                        
+                        is_disabled=State.checkbox_state,
                         on_change=State.toggle_car_state
                         #to do something about the state of the class
                         
@@ -273,21 +274,24 @@ def human_AI():
 
                     rx.checkbox(
                         "Traffic light",
-                
+
+                        disabled=State.checkbox_state,
                         on_change=State.toggle_trafficLight_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Bus",
-                
+
+                        disabled=State.checkbox_state,
                         on_change=State.toggle_bus_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Human",
-                
+
+                        disabled=State.checkbox_state,
                         on_change=State.toggle_human_state
                         #to do something about the state of the class
                     ),
