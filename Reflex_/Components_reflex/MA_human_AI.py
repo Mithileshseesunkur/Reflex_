@@ -4,8 +4,9 @@ import requests
 from PIL import Image
 from .obj_detect.yolo_ import yolo_
 import time
+import asyncio
 import threading
-from countdown import countdown
+
 
 
 def initialise(): #get first image when loading 
@@ -30,8 +31,6 @@ def get_result(): #get image of resulting prediction
         return result_image_list
 
 
-
-
 class State(rx.State): 
 
     #app start
@@ -43,12 +42,14 @@ class State(rx.State):
     bus: bool=False
     human: bool=False
     #--------------------------
-    #blur image before start
-    blur_value:str="blur(5px)"
+
+    #blur image var
+    blur_value:str="blur(20px)"
     blur_state:bool=True
     time:int=3
     time_up:bool
     iter:int
+    check_button_disabled:bool=True
     #--------------------------
 
     #var image viewer
@@ -78,44 +79,45 @@ class State(rx.State):
         print(self.human)
     #---------------------------------------------------------image timer
     
-    def timer(self):
-        print("starting timer")
-        for self.iter in range(3):
-            self.time-=1
-            time.sleep(1)
-            print(self.time)
+    
         
-        self.time_up=True
-        if self.time_up:
-            
-            self.blur_state=True
-            #print("blur state",self.blur_state)
-            self.blur_value="blur(5px)"
-            self.time=3
-        print("timer up")
-        #return self.time_up
-        
-    def unblur(self):
+    
+    
+    async def unblur(self):
         print("unblurred")
-        time.sleep(0.01)
+        #time.sleep(0.01)
+        self.check_button_disabled=False
         self.blur_state=False
         self.blur_value="0"
         print(f"blur state and value before timer: {self.blur_state}, {self.blur_value}")
-        #timer_thread=threading.Thread(target=self.timer)
-        #timer_thread.start()
-        #timer_thread.join()
-        self.timer()
+        
+        
+        yield  # Allow UI to update before starting timer
+        await asyncio.sleep(3)
+        
+        self.blur_value="blur(20px)"
+        #self.blur_state=True
+        #print("blur state",self.blur_state)
+        #self.blur_value="blur(5px)"
         print(f"blur state and value after timer: {self.blur_state}, {self.blur_value}")
         print("here")
+
         
+        
+    
+   
 
     #----------------------------------------------------------image viewer
     def next_image(self):
         if self.current_image_index < len(self.images)-1:
             self.current_image_index=self.current_image_index+1
+
+            #blur next pic
             self.blur_state=True
-            self.blur_value="blur(5px)"
-            self.reveal_visibility=True
+            self.blur_value="blur(20px)"
+
+            self.check_button_disabled=True
+            
         
             #self.path=self.images[self.current_image_index]
             
@@ -201,7 +203,7 @@ def human_AI():
                     ),
 
                     rx.chakra.tooltip(
-                        rx.chakra.button(
+                        rx.chakra.button(  #------------------REVEAL BUTTON
                             "Reveal", #button to click to reveal image and start timer
                             #position="absolute",
                             #top="50%",
@@ -219,7 +221,7 @@ def human_AI():
                         label="Click to unblur"
                     ),
                     rx.chakra.tooltip(
-                        rx.chakra.button(
+                        rx.chakra.button( #-----------------CHECK BUTTON
                             rx.chakra.icon(tag="check"),
                             border_radius="25%",
                             margin_top="10px",
@@ -229,7 +231,7 @@ def human_AI():
                             on_click=State.runYOLO,
                             #bg="#68D391", add cond for dark and white
                             #color="white"
-                            is_disabled=State.blur_state
+                            is_disabled=State.check_button_disabled
 
                         ),
                         label="Run Object Detection",
