@@ -43,10 +43,7 @@ class State(rx.State):
     human: bool=False
 
     checkbox_state:bool=True
-
-    check_button_state:bool=True
-
-    checkbox_checked_state:bool=False
+    checkbox_checked_state:bool=None
     #--------------------------
 
     #blur image var
@@ -55,6 +52,7 @@ class State(rx.State):
     time:int=3
     time_up:bool
     iter:int
+    check_button_state:bool=True
     
     #--------------------------
 
@@ -91,13 +89,25 @@ class State(rx.State):
         self.human= not self.human
         print(self.human)
 
-    def uncheck_all(self,event=None):
+    def reset_checkbox_values(self,event=None):
         
         self.car =False 
         self.bus =False 
         self.trafficLight =False
         self.human= False
+    
+    # checked: dict[str, bool] = {"Car": False, "Human": False,
+    #                             "Bus": False,"Traffic light": False}
 
+    # def toggle_checkbox(self, item: str):
+    #     self.checked[item] = not self.checked[item]
+
+    # def checkbox_item(label: str):
+    #     return rx.checkbox(
+    #         label,
+    #         is_checked=rx.cond(State.checked[label], True, False),
+    #         on_change=State.toggle_checkbox(label),
+    #     )
     #---------------------------------------------------------reveal and image timer 
     
     
@@ -141,10 +151,13 @@ class State(rx.State):
 
             #disable run yolo button on next image
             self.check_button_state=True
+            
+            #reset checboxes to false
+            self.reset_checkbox_values()
 
             #uncheck all on next image
             self.checkbox_checked_state=False
-            self.uncheck_all()
+            
             
             #disable checkboxes on next
             self.checkbox_state=True
@@ -334,10 +347,11 @@ def human_AI():
 
                     rx.checkbox(
                         "Car",
-                        is_checked=State.checkbox_checked_state,
+                        on_change=State.toggle_car_state,
+                        checked= State.car,
                         disabled=State.checkbox_state,
                         
-                        on_change=State.toggle_car_state
+                        
                         #to do something about the state of the class
                         
                     ),
@@ -345,32 +359,35 @@ def human_AI():
                     rx.checkbox(
                         "Traffic light",
 
+                        
+                        on_change=State.toggle_trafficLight_state,
+                        checked= State.trafficLight, #must be same state for unchecking
                         disabled=State.checkbox_state,
-                        default_checked=State.checkbox_checked_state,
-                        on_change=State.toggle_trafficLight_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Bus",
-
+                        on_change=State.toggle_bus_state,
+                        checked= State.bus,
                         disabled=State.checkbox_state,
-                        default_checked=State.checkbox_checked_state,
-                        on_change=State.toggle_bus_state
                         #to do something about the state of the class
                     ),
 
                     rx.checkbox(
                         "Human",
 
+                        on_change=State.toggle_human_state,
+                        checked= State.human,
                         disabled=State.checkbox_state,
-                        default_checked=State.checkbox_checked_state,
-                        on_change=State.toggle_human_state
                         #to do something about the state of the class
                     ),
                         align="start",
                         spacing="4",  # Add spacing between checkboxes
-                        
+                    # State.checkbox_item("Car"),
+                    # State.checkbox_item("Human"),
+                    # State.checkbox_item("Bus"),
+                    # State.checkbox_item("Traffic light"),
                     
                     
                 ),
